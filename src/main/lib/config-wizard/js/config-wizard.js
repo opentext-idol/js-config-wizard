@@ -49,9 +49,8 @@ define([
         handleStepChange: function(e, data) {
             if (data.direction === 'next') {
                 var currentStep = this.wizard.getCurrentStep().view;
-                var validate = currentStep.validate;
 
-                if (validate && !currentStep.validate()) {
+                if (currentStep.canChangeStep && !currentStep.canChangeStep()) {
                     e.preventDefault(); //prevents wizard from going to next step
                 }
                 else {
