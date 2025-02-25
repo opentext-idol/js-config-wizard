@@ -11,7 +11,7 @@
 
     <groupId>com.autonomy.frontend</groupId>
     <artifactId>config-wizard</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <packaging>jar</packaging>
 
 
@@ -58,23 +58,5 @@
         </pluginManagement>
 
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.documentcloud</groupId>
-            <artifactId>underscore</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.documentcloud</groupId>
-            <artifactId>backbone</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.autonomy.frontend.frontend-lib</groupId>
-            <artifactId>javascript-utils</artifactId>
-            <version>1.4.0</version>
-        </dependency>
-    </dependencies>
 
 </project>
