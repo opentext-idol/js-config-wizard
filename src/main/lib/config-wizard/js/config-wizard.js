@@ -17,6 +17,7 @@ define([
             this.wizardEl = options.wizardEl;
 
             this.logoutUri = options.logoutUri;
+            this.logoutHandler = options.logoutHandler;
             this.strings = options.strings;
 
             this.wizard = new Wizard({
@@ -72,7 +73,11 @@ define([
                 return;
             }
 
-            window.location = this.logoutUri;
+            if (this.logoutHandler) {
+                this.logoutHandler();
+            } else {
+                window.location = this.logoutUri;
+            }
         },
 
         handleStepChanged: function(e, currentIndex, priorIndex) {
