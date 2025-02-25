@@ -8,7 +8,7 @@ define([
     return Backbone.View.extend({
 
         initialize: function(options) {
-            _.bindAll(this, 'handleFinishedSetup', 'handleStepChanged');
+            _.bindAll(this, 'handleFinishedSetup', 'handleStepChanged', 'handleStepChange');
 
             options = options || {};
 
@@ -21,6 +21,7 @@ define([
 
             this.wizard = new Wizard({
                 onFinished: this.handleFinishedSetup,
+                onStepChange: this.handleStepChange,
                 onStepChanged: this.handleStepChanged,
                 strings: options.strings,
                 steps: options.steps
@@ -45,6 +46,20 @@ define([
             this.$(this.navigationEl).append(this.navigation.el);
         },
 
+        handleStepChange: function(e, data) {
+            if (data.direction === 'next') {
+                var currentStep = this.wizard.getCurrentStep().view;
+                var validate = currentStep.validate;
+
+                if (validate && !currentStep.validate()) {
+                    e.preventDefault(); //prevents wizard from going to next step
+                }
+                else {
+                    Wizard.prototype.handleStepChange.apply(this.wizard, arguments);
+                }
+            }
+        },
+
         handleFinishedSetup: function(){
             var lastStep = this.wizard.getCurrentStep().view;
             var validateFunction = lastStep.validate;
@@ -53,7 +68,6 @@ define([
                 return;
             }
 
-            /* the below URL needs to be given as input if this file gets generalized to a library */
             window.location = this.logoutUri;
         },
 
