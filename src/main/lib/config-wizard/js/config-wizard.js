@@ -20,11 +20,14 @@ define([
             this.strings = options.strings;
 
             this.wizard = new Wizard({
-                onFinished: this.handleFinishedSetup,
-                onStepChange: this.handleStepChange,
-                onStepChanged: this.handleStepChanged,
+                columnClass: options.columnClass,
                 strings: options.strings,
-                steps: options.steps
+                steps: options.steps ,
+                wizardOptions: {
+                    onStepChanging: this.handleStepChange,
+                    onStepChanged: this.handleStepChanged,
+                    onFinished: this.handleFinishedSetup
+                }
             });
 
             this.navigation = new Navigation({
@@ -46,17 +49,19 @@ define([
             this.$(this.navigationEl).append(this.navigation.el);
         },
 
-        handleStepChange: function(e, data) {
-            if (data.direction === 'next') {
+        handleStepChange: function(e, currentIndex, newIndex) {
+            if (newIndex > currentIndex) {
                 var currentStep = this.wizard.getCurrentStep().view;
 
                 if (currentStep.canChangeStep && !currentStep.canChangeStep()) {
-                    e.preventDefault(); //prevents wizard from going to next step
+                    return false;
                 }
                 else {
                     Wizard.prototype.handleStepChange.apply(this.wizard, arguments);
                 }
             }
+
+            return true;
         },
 
         handleFinishedSetup: function(){
@@ -70,12 +75,11 @@ define([
             window.location = this.logoutUri;
         },
 
-        handleStepChanged: function() {
+        handleStepChanged: function(e, currentIndex, priorIndex) {
             var $loginButton = this.wizard.$('[data-last="Login"]');
-            var isLastStep = this.wizard.$('.users-panel').hasClass('active');
+            var isLastStep = currentIndex === this.wizard.steps.length - 1;
 
-            $loginButton.toggleClass('btn-warning', isLastStep)
-                        .find('i').toggleClass('icon-arrow-right', !isLastStep).toggleClass('icon-hand-right', isLastStep);
+            $loginButton.toggleClass('btn-warning', isLastStep);
 
             if(isLastStep) {
                 $loginButton.attr('data-toggle', 'tooltip')

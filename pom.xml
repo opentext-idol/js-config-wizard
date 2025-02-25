@@ -11,7 +11,7 @@
 
     <groupId>com.autonomy.frontend</groupId>
     <artifactId>config-wizard</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
 
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.autonomy.frontend.frontend-lib</groupId>
             <artifactId>javascript-utils</artifactId>
-            <version>1.1.0</version>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
 
