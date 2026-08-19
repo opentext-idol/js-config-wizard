@@ -1,18 +1,15 @@
-define([
-    'backbone',
-    'text!config-wizard/templates/welcome.html'
-], function(Backbone, template) {
+const Backbone = require('backbone');
+const template = require('../templates/welcome.html');
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
 
-        template: _.template(template),
+    template: _.template(template),
 
-        initialize: function(options) {
-            this.options = options;
-        },
+    initialize: function(options) {
+        this.options = options;
+    },
 
-        render: function(){
-            this.$el.html(this.template(this.options));
-        }
-    });
+    render: function(){
+        this.$el.html(this.template(this.options));
+    }
 });

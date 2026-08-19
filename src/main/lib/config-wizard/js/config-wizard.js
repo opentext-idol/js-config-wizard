@@ -1,101 +1,98 @@
-define([
-    'backbone',
-    'js-utils/js/wizard-custom',
-    'js-utils/js/empty-navbar',
-    'underscore'
-], function(Backbone, Wizard, Navigation, _) {
+const Backbone = require('backbone');
+const Wizard = require('hp-autonomy-js-whatever/src/js/wizard-custom');
+const Navigation = require('hp-autonomy-js-whatever/src/js/empty-navbar');
+const _ = require('underscore');
 
-    return Backbone.View.extend({
+module.exports = Backbone.View.extend({
 
-        initialize: function(options) {
-            _.bindAll(this, 'handleFinishedSetup', 'handleStepChanged', 'handleStepChange');
+    initialize: function(options) {
+        _.bindAll(this, 'handleFinishedSetup', 'handleStepChanged', 'handleStepChange');
 
-            options = options || {};
+        options = options || {};
 
-            this.template = options.template;
-            this.navigationEl = options.navigationEl;
-            this.wizardEl = options.wizardEl;
+        this.template = options.template;
+        this.navigationEl = options.navigationEl;
+        this.wizardEl = options.wizardEl;
 
-            this.logoutUri = options.logoutUri;
-            this.logoutHandler = options.logoutHandler;
-            this.strings = options.strings;
+        this.logoutUri = options.logoutUri;
+        this.logoutHandler = options.logoutHandler;
+        this.strings = options.strings;
 
-            this.wizard = new Wizard({
-                columnClass: options.columnClass,
-                strings: options.strings,
-                steps: options.steps ,
-                wizardOptions: {
-                    onStepChanging: this.handleStepChange,
-                    onStepChanged: this.handleStepChanged,
-                    onFinished: this.handleFinishedSetup
-                }
-            });
-
-            this.navigation = new Navigation({
-                showLogout: false,
-                strings: _.pick(options.strings, 'appName')
-            });
-
-            this.render();
-        },
-
-        render: function() {
-            this.$el.html(this.template());
-            this.wizard.setElement(this.$(this.wizardEl));
-            this.wizard.render();
-
-            this.navigation.render();
-            this.wizard.renderActiveStep();
-
-            this.$(this.navigationEl).append(this.navigation.el);
-        },
-
-        handleStepChange: function(e, currentIndex, newIndex) {
-            if (newIndex > currentIndex) {
-                var currentStep = this.wizard.getCurrentStep().view;
-
-                if (currentStep.canChangeStep && !currentStep.canChangeStep()) {
-                    return false;
-                }
-                else {
-                    Wizard.prototype.handleStepChange.apply(this.wizard, arguments);
-                }
+        this.wizard = new Wizard({
+            columnClass: options.columnClass,
+            strings: options.strings,
+            steps: options.steps ,
+            wizardOptions: {
+                onStepChanging: this.handleStepChange,
+                onStepChanged: this.handleStepChanged,
+                onFinished: this.handleFinishedSetup
             }
+        });
 
-            return true;
-        },
+        this.navigation = new Navigation({
+            showLogout: false,
+            strings: _.pick(options.strings, 'appName')
+        });
 
-        handleFinishedSetup: function(){
-            var lastStep = this.wizard.getCurrentStep().view;
-            var validateFunction = lastStep.validate;
+        this.render();
+    },
 
-            if(validateFunction && !lastStep.validate()) {
-                return;
-            }
+    render: function() {
+        this.$el.html(this.template());
+        this.wizard.setElement(this.$(this.wizardEl));
+        this.wizard.render();
 
-            if (this.logoutHandler) {
-                this.logoutHandler();
-            } else {
-                window.location = this.logoutUri;
-            }
-        },
+        this.navigation.render();
+        this.wizard.renderActiveStep();
 
-        handleStepChanged: function(e, currentIndex, priorIndex) {
-            var $loginButton = this.wizard.$('[data-last="Login"]');
-            var isLastStep = currentIndex === this.wizard.steps.length - 1;
+        this.$(this.navigationEl).append(this.navigation.el);
+    },
 
-            $loginButton.toggleClass('btn-warning', isLastStep);
+    handleStepChange: function(e, currentIndex, newIndex) {
+        if (newIndex > currentIndex) {
+            var currentStep = this.wizard.getCurrentStep().view;
 
-            if(isLastStep) {
-                $loginButton.attr('data-toggle', 'tooltip')
-                            .tooltip({
-                                title: this.strings.loginTooltip,
-                                container: this.$el
-                            });
+            if (currentStep.canChangeStep && !currentStep.canChangeStep()) {
+                return false;
             }
             else {
-                $loginButton.tooltip('destroy');
+                Wizard.prototype.handleStepChange.apply(this.wizard, arguments);
             }
         }
-    });
+
+        return true;
+    },
+
+    handleFinishedSetup: function(){
+        var lastStep = this.wizard.getCurrentStep().view;
+        var validateFunction = lastStep.validate;
+
+        if(validateFunction && !lastStep.validate()) {
+            return;
+        }
+
+        if (this.logoutHandler) {
+            this.logoutHandler();
+        } else {
+            window.location = this.logoutUri;
+        }
+    },
+
+    handleStepChanged: function(e, currentIndex, priorIndex) {
+        var $loginButton = this.wizard.$('[data-last="Login"]');
+        var isLastStep = currentIndex === this.wizard.steps.length - 1;
+
+        $loginButton.toggleClass('btn-warning', isLastStep);
+
+        if(isLastStep) {
+            $loginButton.attr('data-toggle', 'tooltip')
+                        .tooltip({
+                            title: this.strings.loginTooltip,
+                            container: this.$el
+                        });
+        }
+        else {
+            $loginButton.tooltip('destroy');
+        }
+    }
 });
