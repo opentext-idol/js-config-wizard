@@ -19,7 +19,7 @@ module.exports = Backbone.View.extend({
         this.strings = options.strings;
 
         this.wizard = new Wizard({
-            columnClass: options.columnClass,
+            columnClass: options.columnClass || '',
             strings: options.strings,
             steps: options.steps ,
             wizardOptions: {
