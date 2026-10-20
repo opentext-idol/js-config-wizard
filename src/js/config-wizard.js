@@ -85,14 +85,14 @@ module.exports = Backbone.View.extend({
         $loginButton.toggleClass('btn-warning', isLastStep);
 
         if(isLastStep) {
-            $loginButton.attr('data-toggle', 'tooltip')
+            $loginButton.attr('data-bs-toggle', 'tooltip')
                         .tooltip({
                             title: this.strings.loginTooltip,
                             container: this.$el
                         });
         }
         else {
-            $loginButton.tooltip('destroy');
+            $loginButton.tooltip('dispose');
         }
     }
 });
